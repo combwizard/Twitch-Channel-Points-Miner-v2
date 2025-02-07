@@ -12,6 +12,7 @@ def set_console_title(title):
 clear_console()
 set_console_title("Klaro's Twitch Miner")
 
+strikes = 0
 while True:
     try:
         from TwitchChannelPointsMiner import TwitchChannelPointsMiner
@@ -19,6 +20,9 @@ while True:
         from TwitchChannelPointsMiner.logger import LoggerSettings
         break
     except ImportError:
+        if strikes >= 3:
+            raise ImportError("Failed to import required modules.")
+        strikes += 1
         os.system("pip install -r requirements.txt")
 
 def load_or_create_config(file_path):
@@ -48,6 +52,7 @@ def main():
             file_level=logging.DEBUG,
             emoji=True,
             smart=True,
+            show_seconds=False
         )
 
         twitch_miner = TwitchChannelPointsMiner(

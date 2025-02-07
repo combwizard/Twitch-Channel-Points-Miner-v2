@@ -78,6 +78,7 @@ class LoggerSettings:
         "console_level",
         "console_username",
         "time_zone",
+        "show_seconds",
         "file_level",
         "emoji",
         "colored",
@@ -100,6 +101,7 @@ class LoggerSettings:
         console_level: int = logging.INFO,
         console_username: bool = False,
         time_zone: str or None = None,
+        show_seconds: bool = False,
         file_level: int = logging.DEBUG,
         emoji: bool = platform.system() != "Windows",
         colored: bool = False,
@@ -119,6 +121,7 @@ class LoggerSettings:
         self.console_level = console_level
         self.console_username = console_username
         self.time_zone = time_zone
+        self.show_seconds = show_seconds
         self.file_level = file_level
         self.emoji = emoji
         self.colored = colored
@@ -315,9 +318,12 @@ def configure_loggers(username, settings):
                 if settings.less is False
                 else "%(asctime)s - %(message)s"
             ),
-            datefmt=(
-                f"{Fore.LIGHTBLACK_EX if settings.smart else ''}%H:%M:%S %d/%m/%y{Fore.RESET if settings.smart else ''}" if settings.less is False else "%H:%M:%S %d/%m"
-            ),
+            datefmt=((
+                f"{Fore.LIGHTBLACK_EX if settings.smart else ''}"
+                f"%H:%M{':%S' if settings.show_seconds else ''} %d/%m/%y"
+                f"{Fore.RESET if settings.smart else ''}"
+                if settings.less is False else f"%H:%M{':%S' if settings.show_seconds else ''} %d/%m"
+            )),
             settings=settings,
         )
     )

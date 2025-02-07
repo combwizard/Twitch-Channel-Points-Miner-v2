@@ -121,7 +121,10 @@ class Streamer(object):
 
     def __str__(self):
         return (
-            f"{self.username.capitalize()} ({Color256Palette.cyan if Settings.logger.smart else ''}{_millify(self.channel_points)}{Fore.RESET if Settings.logger.smart else ''} points)"
+            (
+                f"{self.username.capitalize()} ({Color256Palette.cyan if Settings.logger.smart else ''}"
+                f"{_millify(self.channel_points)}{Fore.RESET if Settings.logger.smart else ''} points)"
+            )
             if Settings.logger.less or Settings.logger.smart
             else self.__repr__()
         )
