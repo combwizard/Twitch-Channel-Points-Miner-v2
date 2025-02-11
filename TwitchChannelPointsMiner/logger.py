@@ -196,7 +196,7 @@ class GlobalFormatter(logging.Formatter):
 
         if self.settings.emoji is False:
             if "\u2192" in record.msg:
-                record.msg = record.msg.replace("\u2192", "-->")
+                record.msg = record.msg.replace("\u2192", "->")
 
             # With the update of Stream class, the Stream Title may contain emoji
             # Full remove using a method from utils.

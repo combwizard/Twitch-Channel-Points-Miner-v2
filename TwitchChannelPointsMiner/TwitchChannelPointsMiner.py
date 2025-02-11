@@ -494,19 +494,30 @@ class TwitchChannelPointsMiner:
                     self.streamers[streamer_index].channel_points
                     - self.original_streamers[streamer_index]
                 )
-                
+
                 from colorama import Fore
-                streamer_highlight = Fore.YELLOW
-                
+                # TODO FIX Color256Palette error IF IMPORTED NOTHING IS BEING PRINTED IN CONSOLE THAT USED Color256Palette COLORS
+                class Color256Palette:
+                    GREEN = "\033[38;5;46m"
+                    RED = "\033[38;5;196m"
+                    RESET = "\033[0m"
+
                 streamer_gain = (
-                    f"{streamer_highlight}{self.streamers[streamer_index]}{Fore.RESET}, Total Points Gained: {_millify(gained)}"
-                    if Settings.logger.less
-                    else f"{streamer_highlight}{repr(self.streamers[streamer_index])}{Fore.RESET}, Total Points Gained (after farming - before farming): {_millify(gained)}"
+                    (
+                        f"{self.streamers[streamer_index]}, Total Points "
+                        f"{'Gained:'+Color256Palette.GREEN+' +' if gained >= 0 else 'Lost:'+Color256Palette.RED+' -'}"
+                        f"{_millify(abs(gained))}{Fore.RESET}"
+                    )
+                    if Settings.logger.smart
+                    else (
+                        f"{Fore.YELLOW}{self.streamers[streamer_index]}{Fore.RESET}, Total Points Gained: {_millify(gained)}"
+                        if Settings.logger.less
+                        else f"{Fore.YELLOW}{repr(self.streamers[streamer_index])}{Fore.RESET}, Total Points Gained (after farming - before farming): {_millify(gained)}"
+                    )
                 )
-                
-                indent = ' ' * 25
-                streamer_history = '\n'.join(f"{indent}{history}" for history in self.streamers[streamer_index].print_history().split('; ')) 
-                
+
+                streamer_history = '\n'.join(f"{' ' * 25}{history}" for history in self.streamers[streamer_index].print_history().split('; '))
+
                 logger.info(
                     f"{streamer_gain}\n{streamer_history}",
                     extra={"emoji": ":moneybag:"},
