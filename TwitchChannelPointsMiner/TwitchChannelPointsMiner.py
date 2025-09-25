@@ -89,7 +89,7 @@ class TwitchChannelPointsMiner:
         # Default values for all streamers
         streamer_settings: StreamerSettings = StreamerSettings(),
         # True if we want to use the new Hermes WebSocket API
-        use_hermes: bool = False,
+        use_hermes: bool = True,
     ):
         # Fixes TypeError: 'NoneType' object is not subscriptable
         if not username or username == "your-twitch-username":

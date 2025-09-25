@@ -18,7 +18,7 @@ This repository is a fork of [rdavydov/Twitch-Channel-Points-Miner-v2](https://g
 
 ## Requirements
 
-- Python 3.10+ (3.10 used in Docker; 3.12 works locally)
+- Python 3.10+ (3.12 recommended locally; 3.10 used in Docker)
 - A Twitch account
 
 ## Quick start
@@ -48,7 +48,9 @@ For the full set of options (priorities, per-streamer settings, bet strategies, 
 
 ## How it works
 
-The miner connects to Twitch over GraphQL, PubSub WebSockets, and IRC. It tracks which streamers are live, watches up to **two channels at a time** (a Twitch limit), and performs configured actions for each active stream.
+The miner connects to Twitch over GraphQL, real-time WebSockets (Hermes by default), and IRC. It tracks which streamers are live, watches up to **two channels at a time** (a Twitch limit), and performs configured actions for each active stream.
+
+Twitch shut down the legacy PubSub WebSocket API in April 2025. This fork includes the [Hermes WebSocket integration](https://github.com/rdavydov/Twitch-Channel-Points-Miner-v2/pull/728) from upstream PR #728. **`use_hermes=True` is the default.** Set `use_hermes=False` only if you still need the old PubSub transport for testing.
 
 Streamer priority is controlled by the `priority` setting and the order of your streamer list. When using `followers=True`, channels can be sorted by follow date (`FollowersOrder.ASC` or `DESC`). Use `blacklist=[...]` to exclude specific channels from a follower-based list.
 
@@ -59,6 +61,17 @@ Settings resolve in this order (highest wins):
 1. Per-streamer settings passed to `mine()`
 2. `StreamerSettings` on the `TwitchChannelPointsMiner` instance
 3. Built-in defaults
+
+### TwitchChannelPointsMiner options
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `use_hermes` | bool | `True` | Use the Hermes WebSocket API instead of legacy PubSub |
+| `enable_analytics` | bool | `False` | Collect point history for the analytics dashboard |
+| `claim_drops_startup` | bool | `False` | Claim all inventory drops when the miner starts |
+| `disable_ssl_cert_verification` | bool | `False` | Disable TLS verification (use only to work around cert errors) |
+| `disable_at_in_nickname` | bool | `False` | Match chat mentions without a leading `@` |
+| `priority` | list | `[STREAK, DROPS, ORDER]` | Streamer selection order when multiple are live |
 
 ### Priority values
 
