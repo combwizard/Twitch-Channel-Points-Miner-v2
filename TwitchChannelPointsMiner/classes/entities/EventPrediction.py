@@ -49,7 +49,7 @@ class EventPrediction(object):
     def __str__(self):
         return (
             f"EventPrediction: {self.streamer} - {self.title}"
-            if Settings.logger.less or Settings.logger.smart
+            if Settings.logger.less
             else self.__repr__()
         )
 

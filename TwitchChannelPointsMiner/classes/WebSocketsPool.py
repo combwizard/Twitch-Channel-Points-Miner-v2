@@ -5,7 +5,6 @@ import time
 # import os
 from threading import Thread, Timer
 # from pathlib import Path
-from colorama import Fore
 
 from dateutil import parser
 
@@ -16,7 +15,6 @@ from TwitchChannelPointsMiner.classes.entities.Raid import Raid
 from TwitchChannelPointsMiner.classes.Settings import Events, Settings
 from TwitchChannelPointsMiner.classes.TwitchWebSocket import TwitchWebSocket
 from TwitchChannelPointsMiner.constants import WEBSOCKET
-from TwitchChannelPointsMiner.logger import Color256Palette
 from TwitchChannelPointsMiner.utils import (
     get_streamer_index,
     internet_connection_available,
@@ -208,12 +206,8 @@ class WebSocketsPool:
                             earned = message.data["point_gain"]["total_points"]
                             reason_code = message.data["point_gain"]["reason_code"]
 
-                            logger.info((
-                                f"{Color256Palette.green if Settings.logger.smart else ''}"
-                                f"+{earned}"
-                                f"{Fore.RESET if Settings.logger.smart else ''}"
-                                f" → {ws.streamers[streamer_index]} - Reason: {reason_code}."
-                            ),
+                            logger.info(
+                                f"+{earned} → {ws.streamers[streamer_index]} - Reason: {reason_code}.",
                                 extra={
                                     "emoji": ":rocket:",
                                     "event": Events.get(f"GAIN_FOR_{reason_code}"),

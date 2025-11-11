@@ -18,8 +18,6 @@ import validators
 from pathlib import Path
 from secrets import choice, token_hex
 from typing import Dict, Any
-from colorama import Fore
-
 # from urllib.parse import quote
 # from base64 import urlsafe_b64decode
 # from datetime import datetime
@@ -27,7 +25,6 @@ from colorama import Fore
 from TwitchChannelPointsMiner.classes.entities.Campaign import Campaign
 from TwitchChannelPointsMiner.classes.entities.CommunityGoal import CommunityGoal
 from TwitchChannelPointsMiner.classes.entities.Drop import Drop
-from TwitchChannelPointsMiner.logger import Color256Palette
 from TwitchChannelPointsMiner.classes.Exceptions import (
     StreamerDoesNotExistException,
     StreamerIsOfflineException,
@@ -200,8 +197,8 @@ class Twitch(object):
                 streamer.set_offline()
 
     def get_channel_id(self, streamer_username):
-        json_data = copy.deepcopy(GQLOperations.UserByLogin)
-        json_data["variables"]["login"] = streamer_username
+        json_data = copy.deepcopy(GQLOperations.ReportMenuItem)
+        json_data["variables"] = {"channelLogin": streamer_username}
         json_response = self.post_gql_request(json_data)
         if (
             "data" not in json_response
@@ -503,7 +500,7 @@ class Twitch(object):
 
                             if 'data' not in responsePlaybackAccessToken:
                                 logger.error(
-                                    f"Invalid response from Twitch: {'(Playback Access Token)' if Settings.logger.smart else responsePlaybackAccessToken}")
+                                    f"Invalid response from Twitch: {responsePlaybackAccessToken}")
                                 continue
 
                             streamPlaybackAccessToken = responsePlaybackAccessToken["data"].get(
@@ -775,9 +772,9 @@ class Twitch(object):
             )
 
     def claim_bonus(self, streamer, claim_id):
-        if Settings.logger.less is False and Settings.logger.show_claimed_bonus_msg:
+        if Settings.logger.less is False:
             logger.info(
-                f"{streamer} {Color256Palette.green if Settings.logger.smart else ''}Claimed Bonus{Fore.RESET}!",
+                f"Claiming the bonus for {streamer}!",
                 extra={"emoji": ":gift:", "event": Events.BONUS_CLAIM},
             )
 
@@ -791,7 +788,7 @@ class Twitch(object):
     def claim_moment(self, streamer, moment_id):
         if Settings.logger.less is False:
             logger.info(
-                f"{streamer} Claimed Moment!",
+                f"Claiming the moment for {streamer}!",
                 extra={"emoji": ":video_camera:",
                        "event": Events.MOMENT_CLAIM},
             )
@@ -829,16 +826,12 @@ class Twitch(object):
 
     def __get_drops_dashboard(self, status=None):
         response = self.post_gql_request(GQLOperations.ViewerDropsDashboard)
-        campaigns = (
-            response.get("data", {})
-            .get("currentUser", {})
-            .get("dropCampaigns", [])
-            or []
-        )
+        campaigns = response["data"]["currentUser"]["dropCampaigns"] or []
 
         if status is not None:
             campaigns = (
-                list(filter(lambda x: x["status"] == status.upper(), campaigns)) or []
+                list(filter(lambda x: x["status"] ==
+                     status.upper(), campaigns)) or []
             )
 
         return campaigns
@@ -857,15 +850,9 @@ class Twitch(object):
                 }
 
             response = self.post_gql_request(json_data)
-            if not isinstance(response, list):
-                logger.debug("Unexpected campaigns response format, skipping chunk")
-                continue
             for r in response:
-                drop_campaign = (
-                    r.get("data", {}).get("user", {}).get("dropCampaign", None)
-                )
-                if drop_campaign is not None:
-                    result.append(drop_campaign)
+                if r["data"]["user"] is not None:
+                    result.append(r["data"]["user"]["dropCampaign"])
         return result
 
     def __sync_campaigns(self, campaigns):
@@ -934,7 +921,6 @@ class Twitch(object):
 
     def sync_campaigns(self, streamers, chunk_size=3):
         campaigns_update = 0
-        campaigns = []
         while self.running:
             try:
                 # Get update from dashboard each 60minutes
@@ -991,7 +977,6 @@ class Twitch(object):
 
             except (ValueError, KeyError, requests.exceptions.ConnectionError) as e:
                 logger.error(f"Error while syncing inventory: {e}")
-                campaigns = []
                 self.__check_connection_handler(chunk_size)
 
             self.__chuncked_sleep(60, chunk_size=chunk_size)

@@ -32,7 +32,7 @@ USER_AGENTS = {
 
 BRANCH = "master"
 GITHUB_url = (
-    "https://raw.githubusercontent.com/0x8fv/Twitch-Channel-Points-Miner-v2/"
+    "https://raw.githubusercontent.com/rdavydov/Twitch-Channel-Points-Miner-v2/"
     + BRANCH
 )
 
@@ -170,18 +170,14 @@ class GQLOperations:
             }
         },
     }
-    UserByLogin = {
-        "operationName": "UserByLogin",
-        "variables": {"login": None},
-        "query": """
-            query UserByLogin($login: String!) {
-                user(login: $login) {
-                    id
-                    login
-                    displayName
-                }
+    ReportMenuItem = {  # Use for replace https://api.twitch.tv/helix/users?login={self.username}
+        "operationName": "ReportMenuItem",
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "8f3628981255345ca5e5453dfd844efffb01d6413a9931498836e6268692a30c",
             }
-        """,
+        },
     }
     PersonalSections = (
         {

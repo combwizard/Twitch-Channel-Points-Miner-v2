@@ -4,7 +4,6 @@ import os
 import time
 from datetime import datetime
 from threading import Lock
-from colorama import Fore
 
 from TwitchChannelPointsMiner.classes.Chat import ChatPresence, ThreadChat
 from TwitchChannelPointsMiner.classes.entities.Bet import BetSettings, DelayMode
@@ -12,7 +11,6 @@ from TwitchChannelPointsMiner.classes.entities.Stream import Stream
 from TwitchChannelPointsMiner.classes.Settings import Events, Settings
 from TwitchChannelPointsMiner.constants import URL
 from TwitchChannelPointsMiner.utils import _millify
-from TwitchChannelPointsMiner.logger import Color256Palette
 
 logger = logging.getLogger(__name__)
 
@@ -117,15 +115,12 @@ class Streamer(object):
         self.mutex = Lock()
 
     def __repr__(self):
-        return f"Streamer(username={self.username.capitalize()}, channel_id={self.channel_id}, channel_points={_millify(self.channel_points)})"
+        return f"Streamer(username={self.username}, channel_id={self.channel_id}, channel_points={_millify(self.channel_points)})"
 
     def __str__(self):
         return (
-            (
-                f"{self.username.capitalize()} ({Color256Palette.cyan if Settings.logger.smart else ''}"
-                f"{_millify(self.channel_points)}{Fore.RESET if Settings.logger.smart else ''} points)"
-            )
-            if Settings.logger.less or Settings.logger.smart
+            f"{self.username} ({_millify(self.channel_points)} points)"
+            if Settings.logger.less
             else self.__repr__()
         )
 
@@ -137,7 +132,7 @@ class Streamer(object):
         self.toggle_chat()
 
         logger.info(
-            f"{self} is {Color256Palette.red if Settings.logger.smart else ''}Offline{Fore.RESET if Settings.logger.smart else ''}!",
+            f"{self} is Offline!",
             extra={
                 "emoji": ":sleeping:",
                 "event": Events.STREAMER_OFFLINE,
@@ -153,7 +148,7 @@ class Streamer(object):
         self.toggle_chat()
 
         logger.info(
-            f"{self} is {Color256Palette.green if Settings.logger.smart else ''}Online{Fore.RESET if Settings.logger.smart else ''}!",
+            f"{self} is Online!",
             extra={
                 "emoji": ":partying_face:",
                 "event": Events.STREAMER_ONLINE,

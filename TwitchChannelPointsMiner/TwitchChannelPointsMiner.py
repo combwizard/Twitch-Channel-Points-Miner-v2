@@ -88,7 +88,7 @@ class TwitchChannelPointsMiner:
     ):
         # Fixes TypeError: 'NoneType' object is not subscriptable
         if not username or username == "your-twitch-username":
-            logger.error("Please edit config.json file and try again.")
+            logger.error("Please edit your runner file (usually run.py) and try again.")
             logger.error("No username, exiting...")
             sys.exit(0)
 
@@ -161,9 +161,9 @@ class TwitchChannelPointsMiner:
         current_version, github_version = check_versions()
 
         logger.info(
-            f"Twitch Channel Points Miner v2 | v{current_version} (fork by 0x8fv)"
+            f"Twitch Channel Points Miner v2-{current_version} (fork by rdavydov)"
         )
-        logger.info("https://github.com/0x8fv/Twitch-Channel-Points-Miner-v2")
+        logger.info("https://github.com/rdavydov/Twitch-Channel-Points-Miner-v2")
 
         if github_version == "0.0.0":
             logger.error(
@@ -172,12 +172,6 @@ class TwitchChannelPointsMiner:
         elif current_version != github_version:
             logger.info(f"You are running version {current_version} of this script")
             logger.info(f"The latest version on GitHub is {github_version}")
-            from updater import Updater
-
-            if Updater().update():
-                sys.exit(0)
-            else:
-                sys.exit(1)
 
         for sign in [signal.SIGINT, signal.SIGSEGV, signal.SIGTERM]:
             signal.signal(sign, self.end)
@@ -227,7 +221,7 @@ class TwitchChannelPointsMiner:
             logger.error("You can't start multiple sessions of this instance!")
         else:
             logger.info(
-                f"Start session: '{self.session_id}'", extra={"emoji": ":green_circle:"}
+                f"Start session: '{self.session_id}'", extra={"emoji": ":bomb:"}
             )
             self.running = True
             self.start_datetime = datetime.now()
@@ -263,7 +257,7 @@ class TwitchChannelPointsMiner:
 
             logger.info(
                 f"Loading data for {len(streamers_name)} streamers. Please wait...",
-                extra={"emoji": ":hourglass_flowing_sand:"},
+                extra={"emoji": ":nerd_face:"},
             )
             for username in streamers_name:
                 if username in streamers_name:
@@ -494,30 +488,19 @@ class TwitchChannelPointsMiner:
                     self.streamers[streamer_index].channel_points
                     - self.original_streamers[streamer_index]
                 )
-
+                
                 from colorama import Fore
-                # TODO FIX Color256Palette error IF IMPORTED NOTHING IS BEING PRINTED IN CONSOLE THAT USED Color256Palette COLORS
-                class Color256Palette:
-                    GREEN = "\033[38;5;46m"
-                    RED = "\033[38;5;196m"
-                    RESET = "\033[0m"
-
+                streamer_highlight = Fore.YELLOW
+                
                 streamer_gain = (
-                    (
-                        f"{self.streamers[streamer_index]}, Total Points "
-                        f"{'Gained:'+Color256Palette.GREEN+' +' if gained >= 0 else 'Lost:'+Color256Palette.RED+' -'}"
-                        f"{_millify(abs(gained))}{Fore.RESET}"
-                    )
-                    if Settings.logger.smart
-                    else (
-                        f"{Fore.YELLOW}{self.streamers[streamer_index]}{Fore.RESET}, Total Points Gained: {_millify(gained)}"
-                        if Settings.logger.less
-                        else f"{Fore.YELLOW}{repr(self.streamers[streamer_index])}{Fore.RESET}, Total Points Gained (after farming - before farming): {_millify(gained)}"
-                    )
+                    f"{streamer_highlight}{self.streamers[streamer_index]}{Fore.RESET}, Total Points Gained: {_millify(gained)}"
+                    if Settings.logger.less
+                    else f"{streamer_highlight}{repr(self.streamers[streamer_index])}{Fore.RESET}, Total Points Gained (after farming - before farming): {_millify(gained)}"
                 )
-
-                streamer_history = '\n'.join(f"{' ' * 25}{history}" for history in self.streamers[streamer_index].print_history().split('; '))
-
+                
+                indent = ' ' * 25
+                streamer_history = '\n'.join(f"{indent}{history}" for history in self.streamers[streamer_index].print_history().split('; ')) 
+                
                 logger.info(
                     f"{streamer_gain}\n{streamer_history}",
                     extra={"emoji": ":moneybag:"},
