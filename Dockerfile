@@ -8,7 +8,7 @@ COPY ./requirements.txt ./
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --fix-missing --no-install-recommends \
@@ -17,8 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --fix-missing --no-ins
     rustc \
     zlib1g-dev \
     libjpeg-dev \
-    libssl1.1 \
-    libssl-dev=1.1.* \
+    libssl-dev \
     libblas-dev \
     liblapack-dev \
     make \
