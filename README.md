@@ -11,6 +11,7 @@ Fork of [rdavydov/Twitch-Channel-Points-Miner-v2](https://github.com/rdavydov/Tw
 - [Configuration](#configuration)
 - [Docker](#docker)
 - [Troubleshooting](#troubleshooting)
+- [Issues](#issues)
 
 ## Quick start
 
@@ -140,6 +141,10 @@ python -m TwitchChannelPointsMiner
 
 If `cryptography` fails to build, see the [upstream Termux notes](https://github.com/rdavydov/Twitch-Channel-Points-Miner-v2#termux-android) or set `RUSTFLAGS=" -C lto=no"` before installing.
 
+## Issues
+
+Found a bug or have an idea? [Open an issue](https://github.com/combwizard/Twitch-Channel-Points-Miner-v2/issues) (templates help with the details). Pull requests are not reviewed; see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Credits
 
 | Project | Role |
@@ -147,8 +152,6 @@ If `cryptography` fails to build, see the [upstream Termux notes](https://github
 | [gottagofaster236/Twitch-Channel-Points-Miner](https://github.com/gottagofaster236/Twitch-Channel-Points-Miner) | Original idea |
 | [Tkd-Alex/Twitch-Channel-Points-Miner-v2](https://github.com/Tkd-Alex/Twitch-Channel-Points-Miner-v2) | v2 architecture |
 | [rdavydov/Twitch-Channel-Points-Miner-v2](https://github.com/rdavydov/Twitch-Channel-Points-Miner-v2) | Active maintenance fork |
-
-Personal fork: no PR expectations. See [CONTRIBUTING.md](CONTRIBUTING.md) if you want to fork and modify under GPLv3+.
 
 ## Disclaimer
 

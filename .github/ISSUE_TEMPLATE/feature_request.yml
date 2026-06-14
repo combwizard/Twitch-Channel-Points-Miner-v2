@@ -1,8 +1,13 @@
 name: Feature request
-description: Suggest an idea for this project
+description: Suggest an idea (may not be implemented)
 labels: enhancement
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are welcome. I may decline or suggest you fork if it does not fit this setup.
+        For code changes you need soon, fork under GPLv3+ instead of waiting on a PR.
   - type: textarea
     id: description
     attributes:

@@ -1,8 +1,13 @@
 name: Bug report
-description: Create a report to help us improve
+description: Report a problem running this fork
 labels: bug
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. This is a personal fork; I triage issues when I can.
+        Include enough detail to reproduce. Do not paste cookies or passwords.
   - type: textarea
     id: description
     attributes:
@@ -47,7 +52,17 @@ body:
     id: miner-version
     attributes:
       label: Miner version
-      placeholder: "1.7.7"
+      placeholder: "2.0.5 (from startup log or TwitchChannelPointsMiner/__init__.py)"
+    validations:
+      required: true
+  - type: dropdown
+    id: run-method
+    attributes:
+      label: How are you running it?
+      options:
+        - Python (venv / local)
+        - Docker
+        - Other
     validations:
       required: true
   - type: textarea
